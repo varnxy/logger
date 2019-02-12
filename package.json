@@ -1,0 +1,24 @@
+{
+  "name": "@varnxy/logger",
+  "version": "1.0.0",
+  "description": "Simple logging utility for node",
+  "main": "index.js",
+  "repository": "https://github.com/varnxy/logger.git",
+  "author": "Yusril Herlian Syah <yusrilhsyah@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "file-stream-rotator": "^0.4.1",
+    "log": "^3.2.0",
+    "mkdirp": "^0.5.1",
+    "rtrim": "^1.0.0",
+    "sprintf-js": "^1.1.2",
+    "time-stamp": "^2.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "rmdir": "^1.2.0"
+  }
+}
