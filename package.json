@@ -17,8 +17,11 @@
     "time-stamp": "^2.2.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "rmdir": "^1.2.0"
+    "ansi-styles": "^3.2.1",
+    "ava": "^1.2.1",
+    "is-dir": "^1.0.0"
+  },
+  "scripts": {
+    "test": "ava test.js"
   }
 }
