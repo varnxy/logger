@@ -5,9 +5,10 @@ const mkdirp = require('mkdirp')
     , chalk = require('chalk')
     , rtrim = require('rtrim')
 
-function Logger(name, outDir) {
+let logDirectory = ''
+
+function Logger(name) {
   this.name = name || ''
-  this.outDir = outDir
   this.defaultArgsFormat = []
   this.logTypes = ['info', 'error', 'warn']
   this.colorMap = {
@@ -20,10 +21,11 @@ function Logger(name, outDir) {
 }
 
 Logger.prototype.setup = function() {
-  if (this.outDir) {
-    this.outDir = path.resolve(path.dirname(require.main.filename), this.outDir)
+  if (logDirectory) {
+    logDirectory = path.resolve(path.dirname(__filename), logDirectory)
+    console.log(logDirectory)
 
-    mkdirp.sync(this.outDir)
+    mkdirp.sync(logDirectory)
     this._createRotateLogger()
   } else {
     this._createChalkLogger()
@@ -33,7 +35,7 @@ Logger.prototype.setup = function() {
 
 Logger.prototype._createRotateLogger = function() {
   let logStream = require('file-stream-rotator').getStream({
-    filename: path.join(this.outDir, 'log-%DATE%.log'),
+    filename: path.join(logDirectory, 'log-%DATE%.log'),
     frequency:"daily",
     verbose: false
   })
@@ -80,6 +82,12 @@ Logger.prototype._createFormatArgs = function(msgType, msg) {
   }
 }
 
-module.exports = function(name, outDir) {
-  return new Logger(name, outDir)
+function loggerFactory(name) {
+  return new Logger(name)
 }
+
+loggerFactory.setDirectory = function(logDir) {
+  logDirectory = logDir
+}
+
+module.exports = loggerFactory
