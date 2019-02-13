@@ -1,8 +1,12 @@
-# logger
+# @varnxy/logger
 Simple logging utility for Node
 
+[![npm version](https://badge.fury.io/js/%40varnxy%2Flogger.svg)](https://badge.fury.io/js/%40varnxy%2Flogger)
+[![Build Status](https://travis-ci.org/varnxy/logger.svg?branch=master)](https://travis-ci.org/varnxy/logger)
+[![codecov](https://codecov.io/gh/varnxy/logger/branch/master/graph/badge.svg)](https://codecov.io/gh/varnxy/logger)
+
 ## Introduction
-Log format is `[TIMESTAMP:MSG_TYPE:APP_NAME] MESSAGE`
+The log is using format like this `[TIMESTAMP:MSG_TYPE:APP_NAME] MESSAGE`
 * `TIMESTAMP`
 
   timestamp format is `HH:mm:ss`.
