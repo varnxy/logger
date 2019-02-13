@@ -32,7 +32,7 @@ function Logger(name, basefile) {
 }
 
 Logger.prototype.setup = function() {
-  if (this.debug != 'true') {
+  if (this.debug && this.debug != 'true') {
     this.debug = this.debug.split(',')
   }
 
