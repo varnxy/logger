@@ -13,7 +13,7 @@ let logDirectory = ''
 function Logger(name, basefile) {
   this.name = name || ''
   this.defaultArgsFormat = []
-  this.logTypes = ['info', 'error', 'warn']
+  this.logTypes = ['info', 'error', 'warn', 'debug']
   this.colorMap = {
     info: 'blue',
     error: 'red',
@@ -24,16 +24,16 @@ function Logger(name, basefile) {
     info: 'stdout',
     error: 'stderr',
     warn: 'stderr',
-    debug: 'stdout'
+    debug: 'stderr'
   }
   this.basedir = path.dirname(basefile)
-  this.debug = process.env.DEBUG
+  this.debugEnv = process.env.DEBUG
   this.setup()
 }
 
 Logger.prototype.setup = function() {
-  if (this.debug && this.debug != 'true') {
-    this.debug = this.debug.split(',')
+  if (this.debugEnv && this.debugEnv != 'true') {
+    this.debugEnv = this.debugEnv.split(',')
   }
 
   if (logDirectory) {
@@ -55,40 +55,41 @@ Logger.prototype._createRotateLogger = function() {
   })
 
   this.logTypes.forEach(msgType => {
-    this[msgType] = () => {
+    this[msgType] = function() {
       let msg = sprintf.apply(null, arguments)
         , fmtArgs = this._createFormatArgs(msgType, msg)
 
-      if (this.debug && msgType == 'debug') {
-        if (Array.isArray(this.debug) || this.debug.indexOf(fmtArgs.args[2]) == -1) {
+      if (this.debugEnv && msgType == 'debug') {
+        if (Array.isArray(this.debugEnv) && this.debugEnv.indexOf(fmtArgs.args[2]) == -1) {
           return
         }
       }
 
       logStream.write(vsprintf(fmtArgs.format, fmtArgs.args))
-    }
+    }.bind(this)
   })
 }
 
 Logger.prototype._createChalkLogger = function() {
   this.logTypes.forEach(msgType => {
-    this[msgType] = () => {
+    this[msgType] = function() {
       let msg = sprintf.apply(null, arguments)
         , fmtArgs = this._createFormatArgs(msgType, msg)
+        , appName = fmtArgs.args[2]
 
       fmtArgs.args[0] = chalk.green(fmtArgs.args[0])
       fmtArgs.args[1] = chalk[this.colorMap[msgType]](fmtArgs.args[1])
 
-      fmtArgs.args[2] = chalk.magenta(fmtArgs.args[2])
+      fmtArgs.args[2] = chalk.magenta(appName)
 
-      if (this.debug && msgType == 'debug') {
-        if (Array.isArray(this.debug) || this.debug.indexOf(fmtArgs.args[2]) == -1) {
+      if (this.debugEnv && msgType == 'debug') {
+        if (Array.isArray(this.debugEnv) && this.debugEnv.indexOf(appName) == -1) {
           return
         }
       }
 
       process[this.writer[msgType]].write(vsprintf(fmtArgs.format, fmtArgs.args))
-    }
+    }.bind(this)
   })
 }
 
