@@ -18,11 +18,16 @@
     "time-stamp": "^2.2.0"
   },
   "devDependencies": {
-    "ansi-styles": "^3.2.1",
-    "ava": "^1.2.1",
-    "is-dir": "^1.0.0"
+    "codecov": "^3.2.0",
+    "expect": "^1.20.2",
+    "is-dir": "^1.0.0",
+    "is-file": "^1.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "strip-ansi": "^5.0.0"
   },
   "scripts": {
-    "test": "ava test.js"
+    "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov -F istanbul_mocha",
+    "test-local": "istanbul cover node_modules/mocha/bin/_mocha"
   }
 }
