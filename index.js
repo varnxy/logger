@@ -27,11 +27,15 @@ function Logger(name, basefile) {
     debug: 'stdout'
   }
   this.basedir = path.dirname(basefile)
-
+  this.debug = process.env.DEBUG
   this.setup()
 }
 
 Logger.prototype.setup = function() {
+  if (this.debug != 'true') {
+    this.debug = this.debug.split(',')
+  }
+
   if (logDirectory) {
     logDirectory = path.resolve(this.basedir, logDirectory)
 
@@ -51,18 +55,24 @@ Logger.prototype._createRotateLogger = function() {
   })
 
   this.logTypes.forEach(msgType => {
-    this[msgType] = function() {
+    this[msgType] = () => {
       let msg = sprintf.apply(null, arguments)
         , fmtArgs = this._createFormatArgs(msgType, msg)
 
+      if (this.debug && msgType == 'debug') {
+        if (Array.isArray(this.debug) || this.debug.indexOf(fmtArgs.args[2]) == -1) {
+          return
+        }
+      }
+
       logStream.write(vsprintf(fmtArgs.format, fmtArgs.args))
-    }.bind(this)
+    }
   })
 }
 
 Logger.prototype._createChalkLogger = function() {
   this.logTypes.forEach(msgType => {
-    this[msgType] = function() {
+    this[msgType] = () => {
       let msg = sprintf.apply(null, arguments)
         , fmtArgs = this._createFormatArgs(msgType, msg)
 
@@ -71,10 +81,14 @@ Logger.prototype._createChalkLogger = function() {
 
       fmtArgs.args[2] = chalk.magenta(fmtArgs.args[2])
 
-      let output = vsprintf(fmtArgs.format, fmtArgs.args)
+      if (this.debug && msgType == 'debug') {
+        if (Array.isArray(this.debug) || this.debug.indexOf(fmtArgs.args[2]) == -1) {
+          return
+        }
+      }
 
-      process[this.writer[msgType]].write(output)
-    }.bind(this)
+      process[this.writer[msgType]].write(vsprintf(fmtArgs.format, fmtArgs.args))
+    }
   })
 }
 
