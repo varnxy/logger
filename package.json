@@ -25,5 +25,15 @@
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov -F istanbul_mocha",
     "test-local": "istanbul cover node_modules/mocha/bin/_mocha"
-  }
+  },
+  "keywords": [
+    "varnxy",
+    "logger",
+    "cli",
+    "terminal",
+    "console",
+    "rotate",
+    "daili",
+    "logrotate"
+  ]
 }
