@@ -4,10 +4,21 @@ const logger = require('..')
     , expect = require('expect')
     , execSync = require('child_process').execSync
     , stripAnsi = require('strip-ansi')
-    , timestamp = require('time-stamp')
+    , pad = require('../lib/pad')
+
 
 let stdoutSpy = expect.spyOn(process.stdout, 'write').andCallThrough()
   , stderrSpy = expect.spyOn(process.stderr, 'write').andCallThrough()
+
+function getDate() {
+  let dt = new Date()
+
+  return [
+    dt.getFullYear(),
+    pad(dt.getMonth() + 1, 2),
+    pad(dt.getDate(), 2)
+  ].join('-')
+}
 
 describe('Test @varnxy/logger', () => {
 
@@ -53,13 +64,15 @@ describe('Test @varnxy/logger', () => {
       done()
     })
 
-    it('Should create directory when directory is set', () => {
+    it('Should create directory when directory is set', done => {
       logger.setDirectory('./logs')
       let log = logger()
       log.info('Hello Man')
-
-      expect(isDir.sync('./test/logs')).toBe(true)
-      expect(isFile('./test/logs/log-'+timestamp('YYYY-MM-DD')+'.log')).toBe(true)
+      setTimeout(function() {
+        expect(isDir.sync('./test/logs')).toBe(true)
+        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        done()
+      }, 1000)
     })
 
   })
@@ -110,19 +123,21 @@ describe('Test @varnxy/logger', () => {
       done()
     })
 
-    it('Should debug in the directory', () => {
+    it('Should debug in the directory', done => {
       process.env.DEBUG = 'true'
       logger.setDirectory('./logs')
 
       let log = logger()
 
       log.debug('Foo Bar Baz')
-
-      expect(isDir.sync('./test/logs')).toBe(true)
-      expect(isFile('./test/logs/log-'+timestamp('YYYY-MM-DD')+'.log')).toBe(true)
+      setTimeout(function() {
+        expect(isDir.sync('./test/logs')).toBe(true)
+        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        done()
+      }, 1000)
     })
 
-    it('Should debug only test.js in the directory', () => {
+    it('Should debug only test.js in the directory', done => {
       process.env.DEBUG = 'test.js'
       logger.setDirectory('./logs')
 
@@ -132,8 +147,11 @@ describe('Test @varnxy/logger', () => {
       log1.debug('Foo Bar Baz')
       log2.debug('Foo Bar Baz')
 
-      expect(isDir.sync('./test/logs')).toBe(true)
-      expect(isFile('./test/logs/log-'+timestamp('YYYY-MM-DD')+'.log')).toBe(true)
+      setTimeout(function() {
+        expect(isDir.sync('./test/logs')).toBe(true)
+        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        done()
+      }, 1000)
     })
 
   })

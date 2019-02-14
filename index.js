@@ -1,12 +1,9 @@
-const mkdirp = require('mkdirp')
-    , path = require('path')
+const path = require('path')
     , vsprintf = require('sprintf-js').vsprintf
     , sprintf = require('sprintf-js').sprintf
-    , timestamp = require('time-stamp')
+    , time = require('./lib/time')
     , chalk = require('chalk')
     , caller = require('caller')
-    , ltrim = require('ltrim')
-    , timestampFormat = 'HH:mm:ss'
 
 let logDirectory = ''
 
@@ -39,7 +36,6 @@ Logger.prototype.setup = function() {
   if (logDirectory) {
     logDirectory = path.resolve(this.basedir, logDirectory)
 
-    mkdirp.sync(logDirectory)
     this._createRotateLogger()
   } else {
     this._createChalkLogger()
@@ -99,7 +95,9 @@ Logger.prototype._createFormatArgs = function(msgType, msg) {
   if (!logName) {
     logName = caller(2)
     // Simplified path
-    logName = ltrim(logName.replace(this.basedir, ''), path.sep)
+    logName = logName
+                .replace(this.basedir, '')
+                .replace(new RegExp(path.sep), '')
   }
 
   msg = (msg + '') + '\r\n'
@@ -107,7 +105,7 @@ Logger.prototype._createFormatArgs = function(msgType, msg) {
   return {
     format: '[%s:%s:%s] %s',
     args: [
-      timestamp(timestampFormat),
+      time(),
       msgType.toUpperCase(),
       logName,
       msg
