@@ -11,10 +11,7 @@
     "caller": "^1.0.1",
     "chalk": "^2.4.2",
     "file-stream-rotator": "^0.4.1",
-    "ltrim": "^1.0.0",
-    "mkdirp": "^0.5.1",
-    "sprintf-js": "^1.1.2",
-    "time-stamp": "^2.2.0"
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
     "codecov": "^3.2.0",
