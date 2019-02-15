@@ -4,6 +4,7 @@ const path = require('path')
     , time = require('./lib/time')
     , c = require('ansi-colors')
     , caller = require('caller')
+    , generator = require('./lib/generator')
 
 let logDirectory = ''
 
@@ -44,10 +45,10 @@ Logger.prototype.setup = function() {
 }
 
 Logger.prototype._createRotateLogger = function() {
-  let logStream = require('file-stream-rotator').getStream({
-    filename: path.join(logDirectory, 'log-%DATE%.log'),
-    frequency:"daily",
-    verbose: false
+  let logStream = require('rotating-file-stream')(generator, {
+    path: logDirectory,
+    interval: '1d',
+    compress: true
   })
 
   this.logTypes.forEach(msgType => {
