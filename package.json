@@ -10,7 +10,7 @@
   "dependencies": {
     "ansi-colors": "^3.2.3",
     "caller": "^1.0.1",
-    "file-stream-rotator": "^0.4.1",
+    "rotating-file-stream": "^1.4.0",
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
