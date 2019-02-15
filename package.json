@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "ansi-colors": "^3.2.3",
     "caller": "^1.0.1",
-    "chalk": "^2.4.2",
     "file-stream-rotator": "^0.4.1",
     "sprintf-js": "^1.1.2"
   },

@@ -2,7 +2,7 @@ const path = require('path')
     , vsprintf = require('sprintf-js').vsprintf
     , sprintf = require('sprintf-js').sprintf
     , time = require('./lib/time')
-    , chalk = require('chalk')
+    , c = require('ansi-colors')
     , caller = require('caller')
 
 let logDirectory = ''
@@ -38,7 +38,7 @@ Logger.prototype.setup = function() {
 
     this._createRotateLogger()
   } else {
-    this._createChalkLogger()
+    this._createAnsiColorLogger()
   }
 
 }
@@ -66,17 +66,17 @@ Logger.prototype._createRotateLogger = function() {
   })
 }
 
-Logger.prototype._createChalkLogger = function() {
+Logger.prototype._createAnsiColorLogger = function() {
   this.logTypes.forEach(msgType => {
     this[msgType] = function() {
       let msg = sprintf.apply(null, arguments)
         , fmtArgs = this._createFormatArgs(msgType, msg)
         , appName = fmtArgs.args[2]
 
-      fmtArgs.args[0] = chalk.green(fmtArgs.args[0])
-      fmtArgs.args[1] = chalk[this.colorMap[msgType]](fmtArgs.args[1])
+      fmtArgs.args[0] = c.green(fmtArgs.args[0])
+      fmtArgs.args[1] = c[this.colorMap[msgType]](fmtArgs.args[1])
 
-      fmtArgs.args[2] = chalk.magenta(appName)
+      fmtArgs.args[2] = c.magenta(appName)
 
       if (this.debugEnv && msgType == 'debug') {
         if (Array.isArray(this.debugEnv) && this.debugEnv.indexOf(appName) == -1) {
