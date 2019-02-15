@@ -1,24 +1,15 @@
 const logger = require('..')
+    , fs = require('fs')
     , isDir = require('is-dir')
     , isFile = require('is-file')
     , expect = require('expect')
     , execSync = require('child_process').execSync
     , stripAnsi = require('strip-ansi')
-    , pad = require('../lib/pad')
+    , date = require('../lib/date')
 
 
 let stdoutSpy = expect.spyOn(process.stdout, 'write').andCallThrough()
   , stderrSpy = expect.spyOn(process.stderr, 'write').andCallThrough()
-
-function getDate() {
-  let dt = new Date()
-
-  return [
-    dt.getFullYear(),
-    pad(dt.getMonth() + 1, 2),
-    pad(dt.getDate(), 2)
-  ].join('-')
-}
 
 describe('Test @varnxy/logger', () => {
 
@@ -67,10 +58,18 @@ describe('Test @varnxy/logger', () => {
     it('Should create directory when directory is set', done => {
       logger.setDirectory('./logs')
       let log = logger()
+        , content = ''
+        , filename = './test/logs/log-'+date()+'.log'
+
       log.info('Hello Man')
+
       setTimeout(function() {
+        content = fs.readFileSync(filename)
+
         expect(isDir.sync('./test/logs')).toBe(true)
-        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        expect(isFile(filename)).toBe(true)
+        expect(content).toMatch(/\[\d+2:\d+2\d+2:INFO:test\.js\] Foo Bar Baz\r\n/gm)
+
         done()
       }, 1000)
     })
@@ -117,7 +116,6 @@ describe('Test @varnxy/logger', () => {
 
       expect(/Foo Bar Baz\r\n$/gm.test(uncolored)).toBe(true)
       expect(/DEBUG:test.js\]/gm.test(uncolored)).toBe(true)
-
       expect(stderrSpy.calls.length).toEqual(1)
 
       done()
@@ -128,11 +126,18 @@ describe('Test @varnxy/logger', () => {
       logger.setDirectory('./logs')
 
       let log = logger()
+        , content = ''
+        , filename = './test/logs/log-'+date()+'.log'
 
       log.debug('Foo Bar Baz')
+
       setTimeout(function() {
+        content = fs.readFileSync(filename)
+
         expect(isDir.sync('./test/logs')).toBe(true)
-        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        expect(isFile(filename)).toBe(true)
+        expect(content).toMatch(/\[\d+2:\d+2\d+2:DEBUG:test\.js\] Foo Bar Baz\r\n/gm)
+
         done()
       }, 1000)
     })
@@ -143,13 +148,19 @@ describe('Test @varnxy/logger', () => {
 
       let log1 = logger()
         , log2 = logger('test')
+        , content = ''
+        , filename = './test/logs/log-'+date()+'.log'
 
       log1.debug('Foo Bar Baz')
       log2.debug('Foo Bar Baz')
 
       setTimeout(function() {
+        content = fs.readFileSync(filename)
+
         expect(isDir.sync('./test/logs')).toBe(true)
-        expect(isFile('./test/logs/log-'+getDate()+'.log')).toBe(true)
+        expect(isFile(filename)).toBe(true)
+        expect(content).toMatch(/\[\d+2:\d+2\d+2:DEBUG:test\.js\] Foo Bar Baz\r\n/gm)
+
         done()
       }, 1000)
     })
